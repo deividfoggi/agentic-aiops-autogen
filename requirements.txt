@@ -7,3 +7,4 @@ autogen-agentchat
 autogen-ext[models,magentic-one,openai,azure]
 FastAPI
 uvicorn
+pydantic

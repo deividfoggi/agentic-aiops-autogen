@@ -4,13 +4,13 @@ from utils.httpclient import HttpClient
 from autogen_core import CancellationToken
 from autogen_core.tools import FunctionTool
 from typing_extensions import Annotated
-import asyncio
+from utils.config import Config
 
 load_dotenv()
 
-api_url = os.getenv("DYNA_TRACE_API_URL")
-api_key = os.getenv("DYNA_TRACE_API_KEY")
-http_client = HttpClient(api_url, api_key)
+api_endpoint = Config.dynatrace_api_endpoint
+api_key = Config.dynatrace_api_key
+http_client = HttpClient(api_endpoint, api_key)
 
 async def get_dynatrace_logs(path: str, query: str):
     # get logs using the HttpClient

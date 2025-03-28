@@ -3,8 +3,6 @@ import asyncio
 from pydantic import BaseModel
 from typing import Dict, Any
 from utils.agents import Agents
-from dotenv import load_dotenv
-load_dotenv()
 
 class TaskPayload(BaseModel):
     task: str

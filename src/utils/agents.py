@@ -5,17 +5,18 @@ from autogen_agentchat.agents import AssistantAgent
 from autogen_agentchat.teams import MagenticOneGroupChat
 from autogen_agentchat.ui import Console
 from tools.getdynatracelogs import get_dynatracelogs_tool
+from utils.config import Config
 
 load_dotenv()
 
 class Agents:
     def __init__(self):
         self.az_model_client = AzureOpenAIChatCompletionClient(
-            azure_deployment=os.getenv('AZURE_OPENAI_DEPLOYMENT'),
-            model=os.getenv('AZURE_OPENAI_MODEL'),
-            api_version=os.getenv('AZURE_OPENAI_API_VERSION'),
-            azure_endpoint=os.getenv('AZURE_OPENAI_ENDPOINT'),
-            api_key=os.getenv('AZURE_OPENAI_API_KEY')
+            azure_deployment=Config.aoai_deployment,
+            model=Config.aoai_model,
+            api_version=Config.aoai_version,
+            azure_endpoint=Config.aoai_endpoint,
+            api_key=Config.aoai_api_key
         )
 
         self.assistant = AssistantAgent(
