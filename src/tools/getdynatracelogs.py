@@ -1,4 +1,3 @@
-import os
 from dotenv import load_dotenv
 from utils.httpclient import HttpClient
 from autogen_core import CancellationToken
