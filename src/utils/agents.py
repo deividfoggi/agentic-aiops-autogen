@@ -1,28 +1,31 @@
-import os
 from dotenv import load_dotenv
 from autogen_ext.models.openai import AzureOpenAIChatCompletionClient
 from autogen_agentchat.agents import AssistantAgent
 from autogen_agentchat.teams import MagenticOneGroupChat
 from autogen_agentchat.ui import Console
+from tools.getdynatracelogs import get_dynatrace_logs
+from utils.config import Config
 
 load_dotenv()
 
 class Agents:
     def __init__(self):
         self.az_model_client = AzureOpenAIChatCompletionClient(
-            azure_deployment=os.getenv('AZURE_OPENAI_DEPLOYMENT'),
-            model=os.getenv('AZURE_OPENAI_MODEL'),
-            api_version=os.getenv('AZURE_OPENAI_API_VERSION'),
-            azure_endpoint=os.getenv('AZURE_OPENAI_ENDPOINT'),
-            api_key=os.getenv('AZURE_OPENAI_API_KEY')
+            azure_deployment=Config.aoai_deployment,
+            model=Config.aoai_model,
+            api_version=Config.aoai_version,
+            azure_endpoint=Config.aoai_endpoint,
+            api_key=Config.aoai_api_key
         )
 
-        self.assistant = AssistantAgent(
+        self.dynatrace_specialist = AssistantAgent(
             name="Assistant",
             model_client=self.az_model_client,
+            system_message="""Você é um especialista em Dynatrace. Seu trabalho é consultar logs do Dynatrace quando for solicitado.""",
+            tools=[get_dynatrace_logs],
         )
 
-        self.team = MagenticOneGroupChat([self.assistant], model_client=self.az_model_client)
+        self.team = MagenticOneGroupChat([self.dynatrace_specialist], model_client=self.az_model_client)
     
     async def run_task(self, task:str):
         """
@@ -33,4 +36,3 @@ class Agents:
         """
     
         await Console(self.team.run_stream(task=task))
-        
