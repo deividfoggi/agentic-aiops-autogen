@@ -3,7 +3,7 @@ from autogen_ext.models.openai import AzureOpenAIChatCompletionClient
 from autogen_agentchat.agents import AssistantAgent
 from autogen_agentchat.teams import MagenticOneGroupChat
 from autogen_agentchat.ui import Console
-from tools.getdynatracelogs import get_dynatracelogs_tool
+from tools.getdynatracelogs import get_dynatrace_logs
 from utils.config import Config
 
 load_dotenv()
@@ -18,13 +18,13 @@ class Agents:
             api_key=Config.aoai_api_key
         )
 
-        self.assistant = AssistantAgent(
-            name="Assistant",
+        self.dynatrace_specialist = AssistantAgent(
+            name="DynaTrace Specialist",
             model_client=self.az_model_client,
-            tools=[get_dynatracelogs_tool],
+            tools=[get_dynatrace_logs],
         )
 
-        self.team = MagenticOneGroupChat([self.assistant], model_client=self.az_model_client)
+        self.team = MagenticOneGroupChat([self.dynatrace_specialist], model_client=self.az_model_client)
     
     async def run_task(self, task:str):
         """

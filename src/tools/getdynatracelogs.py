@@ -16,10 +16,3 @@ async def get_dynatrace_logs(path: str, query: str):
     # get logs using the HttpClient
     response = http_client.send_request(api_endpoint, "get", "/data")
     return response
-
-get_dynatracelogs_tool = FunctionTool(
-    get_dynatrace_logs,
-    description="Get logs from DynaTrace",
-    name="get_dynatrace_logs",
-    strict=True
-)
