@@ -18,4 +18,3 @@ class Config:
     aoai_api_key = os.getenv('AZURE_OPENAI_API_KEY')
     dynatrace_api_key = os.getenv('DYNATRACE_API_KEY')
     dynatrace_api_endpoint = os.getenv('DYNATRACE_API_ENDPOINT')
-    ssh_key_path = os.getenv('SSH_KEY_PATH')

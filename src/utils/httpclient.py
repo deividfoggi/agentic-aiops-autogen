@@ -6,8 +6,6 @@ import logging
 import json
 import os
 
-
-
 class HttpClient:
     def __init__(self, base_url: str, headers: Optional[Dict[str, str]] = None):
         self.base_url = base_url
