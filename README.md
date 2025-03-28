@@ -1,44 +1,34 @@
-# README.md
+# MAS Multi-Agents MVP
+Multi-agent architecture using Magentic-One agent from Autogen
 
-# Python App
+## Pre-requisites for development
+VSCode
+python 3.13.2
 
-This project is a Python application that utilizes the Autogen SDK. It serves as an example of how to structure a Python project with utility functions and unit tests.
 
-## Project Structure
+## How to run it local
 
-```
-python-app
-├── src
-│   ├── main.py          # Entry point of the application
-│   ├── utils
-│   │   └── helpers.py   # Utility functions
-│   └── tests
-│       └── test_main.py # Unit tests for the application
-├── requirements.txt     # Project dependencies
-├── .gitignore           # Files to ignore in Git
-└── README.md            # Project documentation
-```
+- Define the following environment variables either in a .env file or directly in the docker run:
 
-## Setup Instructions
+      ```
+      AZURE_OPENAI_DEPLOYMENT=
+      AZURE_OPENAI_MODEL=
+      AZURE_OPENAI_API_VERSION=
+      AZURE_OPENAI_ENDPOINT=
+      AZURE_OPENAI_API_KEY=
+      PORT=8080
+      ``` 
 
-1. Clone the repository:
+- Build and run the image
    ```
-   git clone <repository-url>
-   cd python-app
+   docker build -t mas-app .
+   docker run --env-file .env -p 8080:8080 mas-app
    ```
 
-2. Install the required dependencies:
+- Send a payload to test it:
+
    ```
-   pip install -r requirements.txt
+   curl -X POST http://localhost:8080 \           
+   -H "Content-Type: application/json" \
+   -d '{"task":"Write a Python script to fetch data from an API."}'
    ```
-
-## Usage
-
-To run the application, execute the following command:
-```
-python src/main.py
-```
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.

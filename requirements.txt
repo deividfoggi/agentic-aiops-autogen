@@ -4,6 +4,6 @@ pytest
 python-dotenv
 openai
 autogen-agentchat
-autogen-ext[magentic-one,openai,azure]
+autogen-ext[models,magentic-one,openai,azure]
 FastAPI
 uvicorn

@@ -12,6 +12,7 @@ class TaskPayload(BaseModel):
 class APIEndpoint:
     def __init__(self):
         self.app = FastAPI()
+        self.background_tasks = set()
         self.setup_routes()
 
     def setup_routes(self):
@@ -21,7 +22,9 @@ class APIEndpoint:
                 # Simulate processing the payload
                 print(f"Processing payload: {payload}")
                 agents = Agents()
-                await agents.run_task(payload.task)
+                task = asyncio.create_task(agents.run_task(payload.task))
+                self.background_tasks.add(task)
+                task.add_done_callback(self.background_tasks.discard)
                 
                 return {"status": "success", 
                         "message": "Payload processed successfully",
@@ -39,3 +42,12 @@ class APIEndpoint:
     
 api = APIEndpoint()
 app = api.get_app()
+
+@app.on_event("startup")
+async def startup_event():
+    pass
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    if api.background_tasks:
+        await asyncio.gather(*api.background_tasks)
