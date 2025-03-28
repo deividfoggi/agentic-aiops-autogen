@@ -14,5 +14,5 @@ http_client = HttpClient(api_endpoint, headers={"api-key": f"{api_key}"})
 
 async def get_dynatrace_logs(path: str, query: str):
     # get logs using the HttpClient
-    response = http_client.send_request(api_endpoint, "get", f"{path}?{query}")
+    response = http_client.send_request(api_endpoint, "get", "/data")
     return response

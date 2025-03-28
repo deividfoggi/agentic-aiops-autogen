@@ -19,10 +19,10 @@ class Agents:
         )
 
         self.dynatrace_specialist = AssistantAgent(
-            name="DynaTrace Specialist",
+            name="Assistant",
             model_client=self.az_model_client,
-            system_message="""Você é um especialista em Dynatrace. Seu trabalho é consultar logs do Dynatrace quando solicitado.""",
-            tools=[get_dynatrace_logs]
+            system_message="""Você é um especialista em Dynatrace. Seu trabalho é consultar logs do Dynatrace quando for solicitado.""",
+            tools=[get_dynatrace_logs],
         )
 
         self.team = MagenticOneGroupChat([self.dynatrace_specialist], model_client=self.az_model_client)
