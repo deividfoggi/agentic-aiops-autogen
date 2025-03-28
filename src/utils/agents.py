@@ -4,6 +4,7 @@ from autogen_ext.models.openai import AzureOpenAIChatCompletionClient
 from autogen_agentchat.agents import AssistantAgent
 from autogen_agentchat.teams import MagenticOneGroupChat
 from autogen_agentchat.ui import Console
+from tools.getdynatracelogs import get_dynatracelogs_tool
 
 load_dotenv()
 
@@ -20,6 +21,7 @@ class Agents:
         self.assistant = AssistantAgent(
             name="Assistant",
             model_client=self.az_model_client,
+            tools=[get_dynatracelogs_tool],
         )
 
         self.team = MagenticOneGroupChat([self.assistant], model_client=self.az_model_client)
