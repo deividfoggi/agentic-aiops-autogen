@@ -10,11 +10,12 @@ load_dotenv()
 
 api_endpoint = Config.dynatrace_api_endpoint
 api_key = Config.dynatrace_api_key
-http_client = HttpClient(api_endpoint, api_key)
+
+http_client = HttpClient(api_endpoint, headers={"api-key": f"{api_key}"})
 
 async def get_dynatrace_logs(path: str, query: str):
     # get logs using the HttpClient
-    response = http_client.get(f"{path}{query}")
+    response = http_client.send_request(api_endpoint, "get", "/data")
     return response
 
 get_dynatracelogs_tool = FunctionTool(

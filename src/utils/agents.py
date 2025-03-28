@@ -5,6 +5,7 @@ from autogen_agentchat.agents import AssistantAgent
 from autogen_agentchat.teams import MagenticOneGroupChat
 from autogen_agentchat.ui import Console
 from tools.getdynatracelogs import get_dynatracelogs_tool
+from tools.kubectl import kubectl
 from utils.config import Config
 
 load_dotenv()
@@ -22,7 +23,7 @@ class Agents:
         self.assistant = AssistantAgent(
             name="Assistant",
             model_client=self.az_model_client,
-            tools=[get_dynatracelogs_tool],
+            tools=[get_dynatracelogs_tool, kubectl],
         )
 
         self.team = MagenticOneGroupChat([self.assistant], model_client=self.az_model_client)
