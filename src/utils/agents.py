@@ -5,6 +5,7 @@ from autogen_agentchat.teams import MagenticOneGroupChat
 from autogen_agentchat.ui import Console
 from tools.getdynatracelogs import get_dynatrace_logs
 from utils.config import Config
+from utils.prompthandler import get_prompt
 
 load_dotenv()
 
@@ -21,8 +22,8 @@ class Agents:
         self.dynatrace_specialist = AssistantAgent(
             name="Assistant",
             model_client=self.az_model_client,
-            system_message="""Você é um especialista em Dynatrace. Seu trabalho é consultar logs do Dynatrace quando for solicitado.""",
-            tools=[get_dynatrace_logs],
+            system_message=get_prompt("dynatrace_specialist"),
+            tools=[get_dynatrace_logs]
         )
 
         self.team = MagenticOneGroupChat([self.dynatrace_specialist], model_client=self.az_model_client)
