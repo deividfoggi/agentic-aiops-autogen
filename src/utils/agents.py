@@ -26,6 +26,13 @@ class Agents:
             tools=[get_dynatrace_logs]
         )
 
+        self.aks_specialist = AssistantAgent(
+            name="AKS Specialist",
+            model_client=self.az_model_client,
+            system_message=get_prompt("aks_specialist"),
+            tools=[execute_aks_command]
+        )
+
         self.team = MagenticOneGroupChat([self.dynatrace_specialist], model_client=self.az_model_client)
     
     async def run_task(self, task:str):
