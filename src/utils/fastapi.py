@@ -14,7 +14,7 @@ class APIEndpoint:
         self.setup_routes()
 
     def setup_routes(self):
-        @self.app.post("/wakeup")
+        @self.app.post("/alert")
         async def process_payload(payload: TaskPayload):
             try:
                 # Simulate processing the payload
