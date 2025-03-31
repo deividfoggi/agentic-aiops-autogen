@@ -5,7 +5,8 @@ from typing import Any
 from utils.agents import Agents
 
 class TaskPayload(BaseModel):
-    task: str
+    class Config:
+        extra = "allow"
 
 class APIEndpoint:
     def __init__(self):
@@ -14,20 +15,18 @@ class APIEndpoint:
         self.setup_routes()
 
     def setup_routes(self):
-        @self.app.post("/wakeup")
-        async def process_payload(payload: TaskPayload):
+        @self.app.post("/alert")
+        async def process_payload(event: TaskPayload):
             try:
                 # Simulate processing the payload
-                print(f"Processing payload: {payload}")
+                print(f"Processing payload: {event}")
+                event_str = str(event)
                 agents = Agents()
-                task = asyncio.create_task(agents.run_task(payload.task))
+                task = asyncio.create_task(agents.run_task(event_str))
                 self.background_tasks.add(task)
                 task.add_done_callback(self.background_tasks.discard)
                 
-                return {"status": "success", 
-                        "message": "Payload processed successfully",
-                        "data": payload
-                }
+                return {"status": "success"}, 200
     
             except Exception as e:
                 raise HTTPException(

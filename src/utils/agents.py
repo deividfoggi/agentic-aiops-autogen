@@ -36,7 +36,7 @@ class Agents:
 
         self.team = MagenticOneGroupChat([self.dynatrace_specialist], model_client=self.az_model_client)
     
-    async def run_task(self, task:str):
+    async def run_task(self, event:str):
         """
             Runs a specific task with the configured agents
         
@@ -44,4 +44,4 @@ class Agents:
                 task (str): The task to be performed by the agents
         """
     
-        await Console(self.team.run_stream(task=task))
+        await Console(self.team.run_stream(task=event))
