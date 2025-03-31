@@ -28,7 +28,7 @@ class Agents:
         )
 
         self.aks_specialist = AssistantAgent(
-            name="AKS Specialist",
+            name="aks_specialist",
             model_client=self.az_model_client,
             system_message=get_prompt("aks_specialist"),
             tools=[execute_aks_command]
