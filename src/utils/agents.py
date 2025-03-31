@@ -4,6 +4,7 @@ from autogen_agentchat.agents import AssistantAgent
 from autogen_agentchat.teams import MagenticOneGroupChat
 from autogen_agentchat.ui import Console
 from tools.getdynatracelogs import get_dynatrace_logs
+from tools.akscommands import execute_aks_command
 from utils.config import Config
 from utils.prompthandler import get_prompt
 
