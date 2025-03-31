@@ -1,5 +1,5 @@
 import subprocess
-from config.settings import RESOURCE_GROUP, CLUSTER_NAME
+from utils.config import Config
 
 def execute_aks_command(command: str) -> str:
     """
