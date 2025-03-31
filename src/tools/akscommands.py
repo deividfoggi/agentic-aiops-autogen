@@ -1,6 +1,9 @@
 import subprocess
 from utils.config import Config
 
+RESOURCE_GROUP = Config.az_resourcegroup
+CLUSTER_NAME = Config.az_aks_name
+
 def execute_aks_command(command: str) -> str:
     """
     Executa um comando kubectl dentro de um cluster AKS.
