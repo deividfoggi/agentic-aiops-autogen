@@ -18,3 +18,5 @@ class Config:
     aoai_api_key = os.getenv('AZURE_OPENAI_API_KEY')
     dynatrace_api_key = os.getenv('DYNATRACE_API_KEY')
     dynatrace_api_endpoint = os.getenv('DYNATRACE_API_ENDPOINT')
+    az_resourcegroup = os.getvenv('RESOURCE_GROUP')
+    az_aks_name = os.getenv('AKS_CLUSTER_NAME')

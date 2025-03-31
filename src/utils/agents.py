@@ -4,6 +4,7 @@ from autogen_agentchat.agents import AssistantAgent
 from autogen_agentchat.teams import MagenticOneGroupChat
 from autogen_agentchat.ui import Console
 from tools.getdynatracelogs import get_dynatrace_logs
+from tools.akscommands import execute_aks_command
 from utils.config import Config
 from utils.prompthandler import get_prompt
 
@@ -24,6 +25,13 @@ class Agents:
             model_client=self.az_model_client,
             system_message=get_prompt("dynatrace_specialist"),
             tools=[get_dynatrace_logs]
+        )
+
+        self.aks_specialist = AssistantAgent(
+            name="AKS Specialist",
+            model_client=self.az_model_client,
+            system_message=get_prompt("aks_specialist"),
+            tools=[execute_aks_command]
         )
 
         self.team = MagenticOneGroupChat([self.dynatrace_specialist], model_client=self.az_model_client)
