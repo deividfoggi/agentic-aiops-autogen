@@ -3,6 +3,8 @@ import asyncio
 from pydantic import BaseModel
 from typing import Any
 from utils.agents import Agents
+from tools.queryazmonitor import query_azure_monitor
+from datetime import timedelta
 
 class TaskPayload(BaseModel):
     class Config:
@@ -33,7 +35,16 @@ class APIEndpoint:
                     status_code=500,
                     detail=f"Error processing payload: {str(e)}"
                 )
-            
+    # essa rota é somente para teste da tool queryazmonitor
+        @self.app.post("/test-azmonitor")
+        async def testazmonitor(event: TaskPayload):
+            result = await query_azure_monitor(
+                resource_id="/subscriptions/00ec1d2c-df0a-49cb-bb6c-848f54417bf5/resourceGroups/mas-aks-mvp/providers/Microsoft.ContainerService/managedClusters/MVP-AKS",
+                query="""KubePodInventory | take 10""",
+                time_span=timedelta(minutes=5)
+            )
+            return {f"status": "success", "message": "{result}"}, 200
+    
     def get_app(self):
         return self.app
     
