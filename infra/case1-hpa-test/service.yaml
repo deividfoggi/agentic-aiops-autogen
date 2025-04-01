@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: hpa-deployment
+  labels:
+    run: hpa-deployment
+spec:
+  selector:
+    run: hpa-deployment
+  ports:
+  - port: 80

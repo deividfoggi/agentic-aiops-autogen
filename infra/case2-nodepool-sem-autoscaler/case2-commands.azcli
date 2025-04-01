@@ -1,0 +1,67 @@
+#Case:
+# Temos um nodepool com 2 nodes e sem autoscaler
+# Os recursos são o suficienter para suportar o deploy do app1, mas não o app2
+# Ao deployar o app2, não terá recursos suficientes para o app2.
+
+#Runbook:
+# Executar o login no Azure, definir os parâmetros e obeter as credenciais do AKS
+# Executar os comandos de create namespace, add nodepool
+# Executar o apply do deployment do app1 e aguardar o status do deployment
+# Executar o apply do deployment do app2
+# Verificar os eventos do Kubernetes, para verificar o erro de falta de recursos para o deploy do app2
+
+#Erro:
+# 0/4 nodes are available: 2 Insufficient cpu, 2 node(s) didn't match Pod's node affinity/selector. preemption: 0/4 nodes are available: 2 No preemption victims found for incoming pod, 2 Preemption is not helpful for scheduling.
+
+
+
+# Login no Azure
+az login
+
+# Parametros
+# vCPUs: 2 Memória: 8 GB
+rg=mas-aks-mvp
+aks=MVP-AKS
+ns=hpa-test
+nodepool=case2pool
+vmSize=Standard_D2s_v3 
+ns=nodepool-test
+
+# Credenciais
+az aks get-credentials -g $rg -n $aks
+
+# Namespace 
+kubectl get ns
+kubectl create ns $ns
+kubectl delete ns $ns
+
+# Nodepool
+az aks nodepool list --resource-group $rg --cluster-name $aks 
+
+az aks nodepool add \
+    --resource-group $rg \
+    --cluster-name $aks \
+    --name $nodepool \
+    --node-count 2 \
+    --zones 1 3 \
+    --node-vm-size $vmSize
+
+az aks nodepool delete --resource-group $rg --cluster-name $aks --name $nodepool
+
+# Deployments
+kubectl get deploy -n $ns
+
+kubectl apply -f infra/case2-nodepool-sem-autoscaler/deployment-app-1.yaml -n $ns
+
+kubectl apply -f infra/case2-nodepool-sem-autoscaler/deployment-app-2.yaml -n $ns
+
+kubectl delete deployment app-1 -n $ns
+kubectl delete deployment app-2 -n $ns
+
+
+
+# Clean up
+kubectl delete deployment app-1 -n $ns
+kubectl delete deployment app-2 -n $ns
+kubectl delete ns $ns
+az aks nodepool delete --resource-group $rg --cluster-name $aks --name $nodepool
