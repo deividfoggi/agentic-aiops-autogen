@@ -32,3 +32,11 @@ python 3.13.2
    -H "Content-Type: application/json" \
    -d '{"task":"Write a Python script to fetch data from an API."}'
    ```
+
+## Architecture overview
+
+![alt text](media/architecture_overview.png)
+
+## Sequence diagram
+
+![alt text](media/sequence_diagram.png)
