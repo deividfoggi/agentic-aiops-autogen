@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: mas
-        image: mvpmas.azurecr.io/mas-app:latest
+        image: mvpmas.azurecr.io/mas-app:v0.2
         ports:
         - containerPort: 8080
         resources:
