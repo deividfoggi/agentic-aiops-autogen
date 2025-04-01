@@ -3,6 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mas-deployment
+  namespace: mas
   labels:
     app: mas
 spec:
