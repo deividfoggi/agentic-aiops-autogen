@@ -1,13 +1,26 @@
-from azure.identity.aio import DefaultAzureCredential, ClientSecretCredential
-from azure.monitor.query.aio import LogsQueryClient, TokenCredential
+from azure.identity.aio import DefaultAzureCredential
+from azure.monitor.query.aio import LogsQueryClient
 from datetime import datetime, timedelta
 import json
 import os
 from dotenv import load_dotenv
+import aiohttp
+from autogen_agentchat.ui import Console
+from utils.config import Config
 
 load_dotenv()
 
-async def query_azure_monitor(resource_id: str, query: str, time_span: timedelta):
+class DateTimeEncoder(json.JSONEncoder):
+    """
+    Classe para serializar objetos datetime em JSON.
+    """
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        return super().default(obj)
+
+#No momento, o workspace_id esta sendo passado via environment variable, mas precisa ser passado via parametro, quando a funcion calling ocorrer
+async def query_azure_monitor(query: str, time_span: timedelta):
     """
     Executa uma query em um recurso no Azure Monitor workspace em busca de logs.
 
@@ -21,40 +34,27 @@ async def query_azure_monitor(resource_id: str, query: str, time_span: timedelta
 
     credential = DefaultAzureCredential()
     client = LogsQueryClient(credential)
-    #workspace_id = "/subscriptions/00ec1d2c-df0a-49cb-bb6c-848f54417bf5/resourceGroups/MAS-AKS-MVP/providers/microsoft.monitor/accounts/AMW-AKSMonitoring-001"
+    workspace_id = Config.get("AZURE_MONITOR_WORKSPACE_ID")
     results = []
 
     try:
-        response = await client.query_resource(
-            resource_id=resource_id,
+        response = await client.query_workspace(
+            workspace_id=workspace_id,
             query=query,
-            timespan=time_span,
+            timespan=time_span
         )
 
         if response.tables:
             for table in response.tables:
                 for row in table.rows:
-                    row_dict = dict(zip(table.columns_names, row))
+                    row_dict = dict(zip(table.columns, row))
                     results.append(row_dict)
 
-        return json.dumps({"status": "success", "logs": results})
+        query_result = json.dumps({"status": "success", "logs": results}, cls=DateTimeEncoder)
+        return query_result
 
     except Exception as e:
         return json.dumps({"status": "error", "message": str(e)})
-    
-async def get_token() -> str:
-    """
-    Obtém um token de acesso para autenticação no Azure.
-
-
-    Retorno:
-    - str: Token de acesso.
-    """
-    try:
-        credential = DefaultAzureCredential()
-        token = await credential.get_token("https://management.azure.com/.default")
-        if not token:
-            raise Exception("Token not found")
-        return token.access_token
-    except Exception as e:
-        return json.dumps({"status": "error", "message": str(e)})
+    finally:
+        await credential.close()
+        await client.close()
