@@ -14,16 +14,21 @@ spec:
     metadata:
       labels:
         app: mas
+        azure.workload.identity/use: "true"
     spec:
+      serviceAccountName: mas
       containers:
       - name: mas
-        image: mvpmas.azurecr.io/mas-app:v0.2
+        image: mvpmas.azurecr.io/mas-app:v0.3
         ports:
         - containerPort: 8080
+        envFrom:
+          - configMapRef:
+              name: mas-config
         resources:
           requests:
-            memory: "64Mi"
-            cpu: "250m"
-          limits:
-            memory: "128Mi"
+            memory: "256Mi"
             cpu: "500m"
+          limits:
+            memory: "1024Mi"
+            cpu: "2048m"
