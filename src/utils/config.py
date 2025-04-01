@@ -20,3 +20,4 @@ class Config:
     dynatrace_api_endpoint = os.getenv('DYNATRACE_API_ENDPOINT')
     az_resourcegroup = os.getenv('RESOURCE_GROUP')
     az_aks_name = os.getenv('AKS_CLUSTER_NAME')
+    azm_workspace_id = os.getenv('AZURE_MONITOR_WORKSPACE_ID')

@@ -8,4 +8,6 @@ autogen-ext[models,magentic-one,openai,azure]
 FastAPI
 uvicorn
 pydantic
-paramiko
+azure.identity
+azure.monitor.query
+aiohttp

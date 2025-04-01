@@ -34,7 +34,7 @@ async def query_azure_monitor(query: str, time_span: timedelta):
 
     credential = DefaultAzureCredential()
     client = LogsQueryClient(credential)
-    workspace_id = Config.get("AZURE_MONITOR_WORKSPACE_ID")
+    workspace_id = Config.azm_workspace_id
     results = []
 
     try:
