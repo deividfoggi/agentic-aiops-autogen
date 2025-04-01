@@ -32,9 +32,9 @@ async def query_azure_monitor(query: str, time_span: timedelta):
     - json: Saída do comando ou erro.
     """
 
-    credential = DefaultAzureCredential()
+    credential = DefaultAzureCredential(kwargs="workload_identity_tenant_id")
     client = LogsQueryClient(credential)
-    workspace_id = Config.get("AZURE_MONITOR_WORKSPACE_ID")
+    workspace_id = Config.azm_workspace_id
     results = []
 
     try:
