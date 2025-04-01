@@ -18,6 +18,7 @@ async def query_azure_monitor(resource_id: str, query: str, time_span: timedelta
     Retorno:
     - json: Saída do comando ou erro.
     """
+
     credential = DefaultAzureCredential()
     client = LogsQueryClient(credential)
     #workspace_id = "/subscriptions/00ec1d2c-df0a-49cb-bb6c-848f54417bf5/resourceGroups/MAS-AKS-MVP/providers/microsoft.monitor/accounts/AMW-AKSMonitoring-001"
@@ -41,26 +42,19 @@ async def query_azure_monitor(resource_id: str, query: str, time_span: timedelta
     except Exception as e:
         return json.dumps({"status": "error", "message": str(e)})
     
-async def get_token(UseDefaultCredential: bool = True):
+async def get_token() -> str:
     """
     Obtém um token de acesso para autenticação no Azure.
 
-    Parâmetros:
-    - UseDefaultCredential (bool): Se True, utiliza as credenciais padrão do Azure.
 
     Retorno:
     - str: Token de acesso.
     """
-    if UseDefaultCredential:
+    try:
         credential = DefaultAzureCredential()
         token = await credential.get_token("https://management.azure.com/.default")
-        return token.token
-    else:
-        credential = ClientSecretCredential(
-            tenant_id=os.getenv("AZURE_TENANT_ID"),
-            client_id=os.getenv("AZURE_CLIENT_ID"),
-            client_secret=os.getenv("AZURE_CLIENT_SECRET"),
-        )
-        scope = "https://management.azure.com/.default"
-        token = await credential.get_token(scope)
+        if not token:
+            raise Exception("Token not found")
         return token.access_token
+    except Exception as e:
+        return json.dumps({"status": "error", "message": str(e)})
