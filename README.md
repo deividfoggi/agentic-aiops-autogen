@@ -32,3 +32,15 @@ python 3.13.2
    -H "Content-Type: application/json" \
    -d '{"task":"Write a Python script to fetch data from an API."}'
    ```
+
+## Architecture overview
+
+The archicture runs the mas in Azure Kubernetes Service as a deployment. It is a full stateless application at the Kubernetes level and it trusts on external services to persist any information such as secrets or AI Agents history. The agents uses AKS workload identity model to access resources needed to perform their jobs.
+
+![alt text](media/architecture_overview.png)
+
+## Sequence diagram
+
+This sequence diagram gives a overview of how the application uses a multi-agent archicture to solve a problem.
+
+![alt text](media/sequence_diagram.png)
