@@ -11,6 +11,7 @@
 # Verificar os eventos do Kubernetes, para verificar o erro de falta de recursos para o deploy do app2
 
 #Erro:
+# 0/4 nodes are available: 2 Insufficient cpu, 2 node(s) didn't match Pod's node affinity/selector. preemption: 0/4 nodes are available: 2 No preemption victims found for incoming pod, 2 Preemption is not helpful for scheduling.
 
 
 
