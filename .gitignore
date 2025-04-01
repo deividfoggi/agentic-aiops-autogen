@@ -7,3 +7,4 @@ venv/
 .Python
 launch.json
 .DS_Store
+*.drawio.bkp
