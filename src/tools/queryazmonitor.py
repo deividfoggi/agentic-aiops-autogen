@@ -1,5 +1,5 @@
-from azure.identity import DefaultAzureCredential, ClientSecretCredential
-from azure.monitor.query import LogsQueryClient, TokenCredential
+from azure.identity.aio import DefaultAzureCredential, ClientSecretCredential
+from azure.monitor.query.aio import LogsQueryClient, TokenCredential
 from datetime import datetime, timedelta
 import json
 import os
@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-def query_azure_monitor(resource_id: str, query: str, time_span: timedelta):
+async def query_azure_monitor(resource_id: str, query: str, time_span: timedelta):
     """
     Executa uma query em um recurso no Azure Monitor workspace em busca de logs.
 
@@ -24,7 +24,7 @@ def query_azure_monitor(resource_id: str, query: str, time_span: timedelta):
     results = []
 
     try:
-        response = client.query_resource(
+        response = await client.query_resource(
             resource_id=resource_id,
             query=query,
             timespan=time_span,
@@ -41,7 +41,7 @@ def query_azure_monitor(resource_id: str, query: str, time_span: timedelta):
     except Exception as e:
         return json.dumps({"status": "error", "message": str(e)})
     
-def get_token(UseDefaultCredential: bool = True):
+async def get_token(UseDefaultCredential: bool = True):
     """
     Obtém um token de acesso para autenticação no Azure.
 
@@ -53,7 +53,7 @@ def get_token(UseDefaultCredential: bool = True):
     """
     if UseDefaultCredential:
         credential = DefaultAzureCredential()
-        token = credential.get_token("https://management.azure.com/.default")
+        token = await credential.get_token("https://management.azure.com/.default")
         return token.token
     else:
         credential = ClientSecretCredential(
@@ -61,6 +61,6 @@ def get_token(UseDefaultCredential: bool = True):
             client_id=os.getenv("AZURE_CLIENT_ID"),
             client_secret=os.getenv("AZURE_CLIENT_SECRET"),
         )
-        scope =  "https://management.azure.com/.default"
-        token = credential.get_token(scope)
+        scope = "https://management.azure.com/.default"
+        token = await credential.get_token(scope)
         return token.access_token
