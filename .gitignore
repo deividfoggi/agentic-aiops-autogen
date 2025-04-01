@@ -6,3 +6,4 @@ venv/
 *.pyd
 .Python
 launch.json
+.DS_Store
