@@ -3,7 +3,7 @@ from autogen_ext.models.openai import AzureOpenAIChatCompletionClient
 from autogen_agentchat.agents import AssistantAgent
 from autogen_agentchat.teams import MagenticOneGroupChat
 from autogen_agentchat.ui import Console
-#from tools.getdynatracelogs import get_dynatrace_logs
+from tools.getdynatracelogs import get_dynatrace_logs
 from tools.shell import shell
 from tools.queryazmonitor import query_azure_monitor
 from utils.config import Config
@@ -21,12 +21,12 @@ class Agents:
             api_key=Config.aoai_api_key
         )
         #Comment out this agent to prevent it from being used during tests with Azure Monitor
-        # self.dynatrace_specialist = AssistantAgent(
-        #     name="Assistant",
-        #     model_client=self.az_model_client,
-        #     system_message=get_prompt("dynatrace_specialist"),
-        #     tools=[get_dynatrace_logs]
-        # )
+        self.dynatrace_specialist = AssistantAgent(
+            name="Assistant",
+            model_client=self.az_model_client,
+            system_message=get_prompt("dynatrace_specialist"),
+            tools=[get_dynatrace_logs]
+        )
 
         self.aks_specialist = AssistantAgent(
             name="aks_specialist",
@@ -42,7 +42,7 @@ class Agents:
             tools=[query_azure_monitor]
         )
 
-        self.team = MagenticOneGroupChat([self.aks_specialist, self.kql_specialist], model_client=self.az_model_client)
+        self.team = MagenticOneGroupChat([self.dynatrace_specialist], model_client=self.az_model_client)
     
     async def run_task(self, event:str):
         """

@@ -1,18 +1,45 @@
-from dotenv import load_dotenv
+import time
 from utils.httpclient import HttpClient
-from autogen_core import CancellationToken
-from autogen_core.tools import FunctionTool
-from typing_extensions import Annotated
 from utils.config import Config
 
-load_dotenv()
+http_client = HttpClient(
+    Config.dynatrace_api_endpoint,
+    headers={
+        "Authorization": f"Api-Token {Config.dynatrace_api_key}",
+        "Content-Type": "application/json"
+    }
+)
 
-api_endpoint = Config.dynatrace_api_endpoint
-api_key = Config.dynatrace_api_key
+async def get_dynatrace_logs(
+    problem_id: str,
+    entity_id: str,
+    start_time: int,
+    end_time: int = None
+):
+    try:
+        if not end_time or end_time == -1:
+            end_time = start_time + 600_000
 
-http_client = HttpClient(api_endpoint, headers={"api-key": f"{api_key}"})
+        start_iso = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(start_time / 1000))
+        end_iso = time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime(end_time / 1000))
 
-async def get_dynatrace_logs(path: str, query: str):
-    # get logs using the HttpClient
-    response = http_client.send_request(api_endpoint, "get", "/data")
-    return response
+        query_params = {
+            "from": start_iso,
+            "to": end_iso,
+            "query": f'entityId="{entity_id}"',
+            "pageSize": 100
+        }
+
+        response = await http_client.send_request(
+            method="GET",
+            path="/v2/logs/query",
+            params=query_params
+        )
+
+        return response
+
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": str(e)
+        }
