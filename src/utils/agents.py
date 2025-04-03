@@ -26,7 +26,6 @@ class Agents:
             #azure_ad_token_provider=token_provider
         )
 
-        #Comment out this agent to prevent it from being used during tests with Azure Monitor
         self.dynatrace_specialist = AssistantAgent(
             name="dynatrace_specialist",
             model_client=self.az_model_client,
@@ -41,7 +40,7 @@ class Agents:
             tools=[shell]
         )
 
-        self.kql_specialist = AssistantAgent(
+        self.azuremonitor_specialist = AssistantAgent(
             name="kql_specialist",
             model_client=self.az_model_client,
             system_message=get_prompt("kql_specialist"),
