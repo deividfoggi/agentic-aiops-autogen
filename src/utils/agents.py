@@ -48,7 +48,7 @@ class Agents:
             tools=[query_azure_monitor]
         )
 
-        self.team = MagenticOneGroupChat([self.aks_specialist, self.kql_specialist], model_client=self.az_model_client)
+        self.team = MagenticOneGroupChat([self.aks_specialist, self.dynatrace_specialist], model_client=self.az_model_client)
     
     async def run_task(self, event:str):
         """
