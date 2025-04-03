@@ -24,3 +24,4 @@ class Config:
     dynatrace_client_id = os.getenv('DYNATRACE_CLIENT_ID')
     dynatrace_client_secret = os.getenv('DYNATRACE_CLIENT_SECRET')
     dynatrace_account_urn = os.getenv('DYNATRACE_ACCOUNT_URN')
+    environment = os.getenv('ENVIRONMENT')
