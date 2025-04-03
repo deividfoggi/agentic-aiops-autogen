@@ -1,14 +1,15 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 import asyncio
 from pydantic import BaseModel
 from typing import Any
 from utils.agents import Agents
 from tools.queryazmonitor import query_azure_monitor
 from datetime import timedelta
+import json
 
-class TaskPayload(BaseModel):
-    class Config:
-        extra = "allow"
+# class TaskPayload(BaseModel):
+#     class Config:
+#         extra = "allow"
 
 class APIEndpoint:
     def __init__(self):
@@ -18,11 +19,12 @@ class APIEndpoint:
 
     def setup_routes(self):
         @self.app.post("/alert")
-        async def process_payload(event: TaskPayload):
+        async def process_payload(request: Request):
             try:
-                # Simulate processing the payload
-                print(f"Processing payload: {event}")
-                event_str = str(event)
+                # Read the request body
+                payload = await request.json()
+                # convert json to string
+                event_str = json.dumps(payload)
                 agents = Agents()
                 task = asyncio.create_task(agents.run_task(event_str))
                 self.background_tasks.add(task)
