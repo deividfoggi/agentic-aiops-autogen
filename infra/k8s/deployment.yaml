@@ -20,7 +20,7 @@ spec:
       serviceAccountName: mas
       containers:
       - name: mas
-        image: mvpmas.azurecr.io/mas-app:v0.5
+        image: mvpmas.azurecr.io/mas-app:v0.8
         ports:
         - containerPort: 8080
         envFrom:
