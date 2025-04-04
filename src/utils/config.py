@@ -16,7 +16,7 @@ class Config:
     aoai_version = os.getenv('AZURE_OPENAI_API_VERSION')
     aoai_endpoint = os.getenv('AZURE_OPENAI_ENDPOINT')
     aoai_api_key = os.getenv('AZURE_OPENAI_API_KEY')
-    llm_model_scope = os.getenv('AZURE_OPENAI_MODEL_SCOPE')
+    llm_model_scope = os.getenv('LLM_MODEL_SCOPE')
     dynatrace_api_key = os.getenv('DYNATRACE_API_KEY')
     az_resourcegroup = os.getenv('RESOURCE_GROUP')
     az_aks_name = os.getenv('AKS_CLUSTER_NAME')
