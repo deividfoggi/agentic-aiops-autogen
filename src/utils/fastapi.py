@@ -6,10 +6,10 @@ from utils.agents import Agents
 from tools.queryazmonitor import query_azure_monitor
 from datetime import timedelta
 import json
-from utils.logger import logger
+from utils.logger import setup_logger
 
 # Set up logging
-logger = logger.setup_logger(__name__)
+logger = setup_logger(__name__)
 
 class APIEndpoint:
     """

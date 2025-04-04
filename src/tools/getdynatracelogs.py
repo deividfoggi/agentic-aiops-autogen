@@ -10,11 +10,12 @@ from autogen_core.tools import FunctionTool
 from typing_extensions import Annotated
 from utils.config import Config
 import urllib.parse
+from utils.logger import setup_logger
 
 load_dotenv()
 
 # Set up logging
-logger = logger.setup_logger(__name__)
+logger = setup_logger(__name__)
 
 class DynatraceAuthError(Exception):
     """Exception raised for Dynatrace authentication errors"""
@@ -223,7 +224,7 @@ def get_dynatrace_logs(
             "results": response.json()  # Include the JSON response from the API
         }
         
-        except Exception as e:
+    except Exception as e:
         # Log any unexpected errors
         logger.error(f"Unexpected error: {str(e)}")
         # Return an error response with details about the exception

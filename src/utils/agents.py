@@ -9,11 +9,12 @@ from tools.queryazmonitor import query_azure_monitor
 from utils.config import Config
 from utils.prompthandler import get_prompt
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
+from utils.logger import setup_logger
 
 load_dotenv()
 
 # Set up logging
-logger = logger.setup_logger(__name__)
+logger = setup_logger(__name__)
 
 class Agents:
     def __init__(self):
@@ -63,9 +64,9 @@ class Agents:
 
         # Create an agent specialized in querying Azure Monitor using KQL
         self.azuremonitor_specialist = AssistantAgent(
-            name="kql_specialist",
+            name="azuremonitor_specialist",
             model_client=self.az_model_client,
-            system_message=get_prompt("kql_specialist"),
+            system_message=get_prompt("azuremonitor_specialist"),
             tools=[query_azure_monitor]
         )
 
