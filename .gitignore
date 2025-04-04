@@ -9,3 +9,5 @@ venv/
 launch.json
 .DS_Store
 *.drawio.bkp
+logs/
+*.log

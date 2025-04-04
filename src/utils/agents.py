@@ -9,30 +9,44 @@ from tools.queryazmonitor import query_azure_monitor
 from utils.config import Config
 from utils.prompthandler import get_prompt
 from azure.identity import DefaultAzureCredential, get_bearer_token_provider
+from utils.logger import setup_logger
 
 load_dotenv()
 
+# Set up logging
+logger = setup_logger(__name__)
+
 class Agents:
     def __init__(self):
-
+        """
+        Initializes the Agents class, setting up the Azure OpenAI Chat Completion Client and creating specialized agents.
+        The agents are designed to handle specific tasks related to Dynatrace logs, shell commands, and Azure Monitor queries.
+        The class also creates a team of agents for collaborative tasks.
+        The Azure OpenAI Chat Completion Client is initialized based on the environment configuration.
+        """
+        
+        # Initialize the Azure OpenAI Chat Completion Client based on the environment
         if Config.environment == "dev":
+            # Use API key authentication for development environment
             self.az_model_client = AzureOpenAIChatCompletionClient(
-            azure_deployment=Config.aoai_deployment,
-            model=Config.aoai_model,
-            api_version=Config.aoai_version,
-            azure_endpoint=Config.aoai_endpoint,
-            api_key=Config.aoai_api_key
+                azure_deployment=Config.aoai_deployment,
+                model=Config.aoai_model,
+                api_version=Config.aoai_version,
+                azure_endpoint=Config.aoai_endpoint,
+                api_key=Config.aoai_api_key
             )
         else:
-            token_provider = get_bearer_token_provider(DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default")
+            # Use Azure AD token provider for non-development environments
+            token_provider = get_bearer_token_provider(DefaultAzureCredential(), Config.llm_model_scope)
             self.az_model_client = AzureOpenAIChatCompletionClient(
-            azure_deployment=Config.aoai_deployment,
-            model=Config.aoai_model,
-            api_version=Config.aoai_version,
-            azure_endpoint=Config.aoai_endpoint,
-            azure_ad_token_provider=token_provider
+                azure_deployment=Config.aoai_deployment,
+                model=Config.aoai_model,
+                api_version=Config.aoai_version,
+                azure_endpoint=Config.aoai_endpoint,
+                azure_ad_token_provider=token_provider
             )
 
+        # Create an agent specialized in handling Dynatrace logs
         self.dynatrace_specialist = AssistantAgent(
             name="dynatrace_specialist",
             model_client=self.az_model_client,
@@ -40,6 +54,7 @@ class Agents:
             tools=[get_dynatrace_logs]
         )
 
+        # Create an agent specialized in executing shell commands
         self.aks_specialist = AssistantAgent(
             name="aks_specialist",
             model_client=self.az_model_client,
@@ -47,21 +62,23 @@ class Agents:
             tools=[shell]
         )
 
+        # Create an agent specialized in querying Azure Monitor using KQL
         self.azuremonitor_specialist = AssistantAgent(
-            name="kql_specialist",
+            name="azuremonitor_specialist",
             model_client=self.az_model_client,
-            system_message=get_prompt("kql_specialist"),
+            system_message=get_prompt("azuremonitor_specialist"),
             tools=[query_azure_monitor]
         )
 
+        # Create a team of agents for collaborative tasks
         self.team = MagenticOneGroupChat([self.aks_specialist, self.dynatrace_specialist], model_client=self.az_model_client)
     
-    async def run_task(self, event:str):
+    async def run_task(self, event: str):
         """
-            Runs a specific task with the configured agents
+        Runs a specific task with the configured agents
         
-            Args:
-                task (str): The task to be performed by the agents
+        Args:
+            event (str): The task to be performed by the agents
         """
-    
+        # Execute the task using the team of agents and stream the output to the console
         await Console(self.team.run_stream(task=event))
