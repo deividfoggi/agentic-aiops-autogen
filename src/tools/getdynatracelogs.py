@@ -181,7 +181,7 @@ def get_dynatrace_logs(
         # encoded_query = urllib.parse.quote(final_query)
         
         # Construct the URL for the Dynatrace logs query endpoint
-        url = Config.dynatrace_api_endpoint + "/api/v2/logs/query"
+        url = Config.dynatrace_api_endpoint + "/api/v2/logs/search"
         
         # Define the query parameters for the API request
         params = {
