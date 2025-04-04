@@ -37,7 +37,7 @@ class Agents:
             )
         else:
             # Use Azure AD token provider for non-development environments
-            token_provider = get_bearer_token_provider(DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default")
+            token_provider = get_bearer_token_provider(DefaultAzureCredential(), Config.llm_model_scope)
             self.az_model_client = AzureOpenAIChatCompletionClient(
                 azure_deployment=Config.aoai_deployment,
                 model=Config.aoai_model,
