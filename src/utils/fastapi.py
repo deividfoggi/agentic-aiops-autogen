@@ -39,6 +39,9 @@ class APIEndpoint:
         @self.app.post("/alert")
         async def process_payload(request: Request):
             try:
+                # Log the incoming request
+                logger.info(f"Received request from {request.client.host} with headers: {request.headers}")
+                
                 # Read the request body
                 payload = await request.json()
 

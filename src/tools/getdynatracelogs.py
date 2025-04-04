@@ -13,10 +13,8 @@ import urllib.parse
 
 load_dotenv()
 
-api_endpoint = Config.dynatrace_api_endpoint
-api_key = Config.dynatrace_api_key
-
-http_client = HttpClient(api_endpoint, headers={"api-key": f"{api_key}"})
+# Set up logging
+logger = logger.setup_logger(__name__)
 
 class DynatraceAuthError(Exception):
     """Exception raised for Dynatrace authentication errors"""
@@ -27,55 +25,59 @@ class DynatraceQueryError(Exception):
     pass
 
 def get_dynatrace_token() -> str:
-    """Get Dynatrace authentication token using the exact same logic as get_token_alt.sh"""
+    """
+    Get a token from Dynatrace using client credentials.
+    Returns:
+        str: The access token for authentication.
+    """
     try:
-        # Credenciais exatamente como no script
-        client_id = "dt0s02.66HVPTDH"
-        client_secret = "dt0s02.66HVPTDH.C254KTHJ3KSX55HXRYMSKUWID55GOLMOMZJNGT6YL5YXRITKN3PLAPKEHFAIE2GN"
-        account_urn = "urn:dtaccount:97ef9243-9098-48e0-a43a-c74900a84e02"
-        environment_url = "tts08128.live.dynatrace.com"
-        
-        # Endpoint de autenticação
+        # Define the authentication URL for Dynatrace
         auth_url = "https://sso.dynatrace.com/sso/oauth2/token"
         
-        # Debug logs como no script
-        print(f"Debug - Fazendo requisição para obter token (método alternativo)...")
-        print(f"Debug - Client ID: {client_id}")
-        print(f"Debug - Account URN: {account_urn}")
-        print(f"Debug - Environment URL: {environment_url}")
-        
-        # Preparar os dados exatamente como no script (usando --data-urlencode)
+        # Prepare the data payload for the authentication request
         data = {
-            "grant_type": "client_credentials",
-            "client_id": client_id,
-            "client_secret": client_secret,
-            "resource": account_urn,
-            "scope": "storage:logs:read storage:buckets:read"  # Note o scope diferente aqui!
+            "grant_type": "client_credentials",  # Specify the grant type for client credentials
+            "client_id": Config.dynatrace_client_id,  # Client ID from the configuration
+            "client_secret": Config.dynatrace_client_secret,  # Client secret from the configuration
+            "resource": Config.dynatrace_account_urn,  # Dynatrace account URN
+            "scope": "storage:logs:read storage:buckets:read"  # Scopes for the requested permissions
         }
         
+        # Set the headers for the authentication request
         headers = {
-            "Content-Type": "application/x-www-form-urlencoded"
+            "Content-Type": "application/x-www-form-urlencoded"  # Specify the content type for form data
         }
         
-        # Fazer a requisição
+        # Make a POST request to the authentication URL with the data and headers
         response = requests.post(auth_url, data=data, headers=headers)
         
-        print(f"Debug - Resposta da API:")
-        print(f"Debug - {response.text}")
-        
+        # Check if the response status code indicates an error
         if response.status_code != 200:
+            # Log the error details
+            logger.error(f"Authentication failed: {response.status_code} - {response.text}")
+            # Raise an exception with the error details
             raise Exception(f"Authentication failed: {response.status_code} - {response.text}")
         
+        # Parse the JSON response from the authentication request
         response_json = response.json()
+        
+        # Check if the access token is present in the response
         if "access_token" not in response_json:
+            # Log an error if the access token is missing
+            logger.error("No access token in response")
+            # Raise an exception indicating the missing token
             raise Exception("No access token in response")
-            
+        
+        # Extract the access token from the response
         token = response_json["access_token"]
+        # Print a debug message indicating successful token extraction
         print(f"Debug - Token extraído com sucesso")
         
+        # Return the extracted access token
         return token
         
     except Exception as e:
+        # Raise an exception with the error details if any error occurs
         raise Exception(f"Error getting token: {str(e)}")
 
 # def build_query_from_problem(problem_json: Dict[Any, Any]) -> str:
@@ -127,13 +129,15 @@ def get_dynatrace_logs(
         limit (int): Number of logs to retrieve.
     """
     try:
-        # Obter o token
+        # Attempt to retrieve the Dynatrace token
         try:
-            token = get_dynatrace_token()
-            print(f"Debug - Token obtained successfully")  # Debug log
+            logger.info("Attempting to get Dynatrace token")  # Log the start of the token retrieval process
+            token = get_dynatrace_token()  # Call the function to get the Dynatrace token
+            logger.info("Token obtained successfully")  # Log success after obtaining the token
         except Exception as e:
-            print(f"Debug - Token error: {str(e)}")  # Debug log
-            return {"error": str(e), "status": "auth_error"}
+            # Handle any exceptions that occur during token retrieval
+            logger.error(f"Failed to get Dynatrace token: {str(e)}")  # Log the error details
+            return {"error": str(e), "status": "auth_error"}  # Return an error response with details
         
         # # Construir a query
         # if problem_json:
@@ -175,46 +179,61 @@ def get_dynatrace_logs(
         # # Codificar a query
         # encoded_query = urllib.parse.quote(final_query)
         
-        # Fazer a requisição exatamente como no script testeapixp
-        url = "https://tts08128.live.dynatrace.com/api/v2/logs/search"
+        # Construct the URL for the Dynatrace logs query endpoint
+        url = Config.dynatrace_api_endpoint + "/api/v2/logs/query"
+        
+        # Define the query parameters for the API request
         params = {
-            "query": query,
-            "from": start_time,
-            "to": end_time,
-            "limit": limit
+            "query": query,  # The DQL query string
+            "from": start_time,  # Start time for the logs
+            "to": end_time,  # End time for the logs
+            "limit": limit  # Maximum number of logs to retrieve
         }
         
+        # Set up the headers for the API request, including the authorization token
         headers = {
-            "Authorization": f"Bearer {token}"
+            "Authorization": f"Bearer {token}"  # Bearer token for authentication
         }
         
-        print(f"Debug - Making request with params: {params}")  # Debug log
+        # Log the request details for debugging purposes
+        logger.info(f"Debug - Making request to {url} with params: {params}")
+        
+        # Make the GET request to the Dynatrace API
         response = requests.get(url, params=params, headers=headers)
         
+        # Check if the response status code indicates an error
         if response.status_code != 200:
-            print(f"Debug - Log search failed: {response.status_code} - {response.text}")  # Debug log
+            # Log the error details
+            logger.error(f"Log search failed: {response.status_code} - {response.text}")
+            # Return an error response with details
             return {
-                "error": f"Log search failed: {response.status_code} - {response.text}",
-                "status": "error",
-                "query_used": query
+            "error": f"Log search failed: {response.status_code} - {response.text}",
+            "status": "error",
+            "query_used": query  # Include the query used in the response
             }
         
+        # Log a success message if the request was successful
+        logger.info("Log search completed successfully")
+        
+        # Return the successful response with the query results
         return {
-            "status": "success",
-            "query_used": query,
-            "time_window": {"from": start_time, "to": end_time},
-            "results": response.json()
+            "status": "success",  # Indicate success
+            "query_used": query,  # Include the query used
+            "time_window": {"from": start_time, "to": end_time},  # Include the time window
+            "results": response.json()  # Include the JSON response from the API
         }
         
-    except Exception as e:
-        print(f"Debug - Unexpected error: {str(e)}")  # Debug log
+        except Exception as e:
+        # Log any unexpected errors
+        logger.error(f"Unexpected error: {str(e)}")
+        # Return an error response with details about the exception
         return {
-            "error": f"Unexpected error: {str(e)}", 
-            "status": "error",
-            "query_attempted": final_query if 'final_query' in locals() else None,
-            "parameters": {
-                "start_time": start_time if 'start_time' in locals() else None,
-                "end_time": end_time if 'end_time' in locals() else None,
-                "limit": limit
+            "error": f"Unexpected error: {str(e)}",  # Include the error message
+            "status": "error",  # Indicate an error occurred
+            "query_attempted": final_query if 'final_query' in locals() else None,  # Include the attempted query if available
+            "parameters": {  # Include the parameters used in the request
+            "start_time": start_time if 'start_time' in locals() else None,
+            "end_time": end_time if 'end_time' in locals() else None,
+            "limit": limit
             }
         }
