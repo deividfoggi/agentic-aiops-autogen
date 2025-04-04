@@ -10,7 +10,7 @@ logger = setup_logger(__name__)
 def main():
     try:
         load_dotenv()
-        port = int(os.getenv('PORT'))
+        port = os.getenv('PORT')
         logger.info(f"Starting server on port {port}")
         uvicorn.run(app, host="0.0.0.0", port=port)
     except Exception as e:

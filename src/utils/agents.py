@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 from autogen_ext.models.openai import AzureOpenAIChatCompletionClient
-from autogen_agentchat.agents import AssistantAgent
+from autogen_agentchat.agents import AssistantAgent #, MultimodalWebSurfer
 from autogen_agentchat.teams import MagenticOneGroupChat
 from autogen_agentchat.ui import Console
 from tools.getdynatracelogs import get_dynatrace_logs
@@ -70,8 +70,14 @@ class Agents:
             tools=[query_azure_monitor]
         )
 
+        # web_surfer_agent = MultimodalWebSurfer(
+        #     name="web_surfer_agent",
+        #     model_client=self.az_model_client,
+        #     system_message=get_prompt("web_surfer_agent")
+        # )
+
         # Create a team of agents for collaborative tasks
-        self.team = MagenticOneGroupChat([self.aks_specialist, self.dynatrace_specialist], model_client=self.az_model_client)
+        self.team = MagenticOneGroupChat([self.dynatrace_specialist], model_client=self.az_model_client)
     
     async def run_task(self, event: str):
         """
