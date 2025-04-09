@@ -70,12 +70,6 @@ class Agents:
             tools=[query_azure_monitor]
         )
 
-        # web_surfer_agent = MultimodalWebSurfer(
-        #     name="web_surfer_agent",
-        #     model_client=self.az_model_client,
-        #     system_message=get_prompt("web_surfer_agent")
-        # )
-
         # Create a team of agents for collaborative tasks
         self.team = MagenticOneGroupChat([self.dynatrace_specialist], model_client=self.az_model_client)
     
