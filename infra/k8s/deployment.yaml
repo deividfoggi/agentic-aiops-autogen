@@ -25,7 +25,7 @@ spec:
       serviceAccountName: mas
       containers:
       - name: mas
-        image: deividfoggi/mas-app:v0.9
+        image: dfoggidemoai.azurecr.io/mas-app:v0.12
         ports:
         - containerPort: 8080
         envFrom:
