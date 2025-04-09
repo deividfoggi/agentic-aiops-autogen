@@ -2,35 +2,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mas-deployment
-  namespace: mas
+  name: cobaia
+  namespace: cobaia
   labels:
-    app: mas
+    app: cobaia
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
-      app: mas
+      app: cobaia
   template:
     metadata:
       labels:
-        app: mas
-        azure.workload.identity/use: "true"
+        app: cobaia
     spec:
       tolerations:
       - key: "CriticalAddonsOnly"
         operator: "Equal"
         value: "NoSchedule"
-        effect: "NoSchedule"    
-      serviceAccountName: mas
+        effect: "NoSchedule"
       containers:
-      - name: mas
-        image: deividfoggi/mas-app:v0.9
+      - name: cobaia
+        image: nginx
         ports:
-        - containerPort: 8080
-        envFrom:
-          - configMapRef:
-              name: mas-config
+        - containerPort: 80
         resources:
           requests:
             memory: "256Mi"

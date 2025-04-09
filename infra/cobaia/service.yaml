@@ -1,0 +1,15 @@
+# a service to expose nginx deployment app in Azure Kubernetes Service (AKS) using Azure Load Balancer
+apiVersion: v1
+kind: Service
+metadata:
+  name: cobaia
+  namespace: cobaia
+  labels:
+    app: cobaia
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80
+  selector:
+    app: cobaia

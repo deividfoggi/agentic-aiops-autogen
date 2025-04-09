@@ -12,3 +12,4 @@ data:
   AZURE_MONITOR_WORKSPACE_ID: "3c1adb4b-3b70-40e3-9c51-c141cfb0c4c3"
   AZURE_TENANT_ID: "16b3c013-d300-468d-ac64-7eda0820b6d3"
   AZURE_OPENAI_API_KEY: ""
+  LLM_MODEL_SCOPE: "https://cognitiveservices.azure.com/.default"
