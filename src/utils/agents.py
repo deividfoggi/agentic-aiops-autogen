@@ -46,13 +46,13 @@ class Agents:
                 azure_ad_token_provider=token_provider
             )
 
-        # # Create an agent specialized in handling Dynatrace logs
-        # self.dynatrace_specialist = AssistantAgent(
-        #     name="dynatrace_specialist",
-        #     model_client=self.az_model_client,
-        #     system_message=get_prompt("dynatrace_specialist"),
-        #     tools=[get_dynatrace_logs]
-        # )
+        # Create an agent specialized in handling Dynatrace logs
+        self.dynatrace_specialist = AssistantAgent(
+            name="dynatrace_specialist",
+            model_client=self.az_model_client,
+            system_message=get_prompt("dynatrace_specialist"),
+            tools=[get_dynatrace_logs]
+        )
 
         # Create an agent specialized in executing shell commands
         self.aks_specialist = AssistantAgent(

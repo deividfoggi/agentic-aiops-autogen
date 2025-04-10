@@ -7,11 +7,10 @@ Se o problema estiver no estado "Fired", você deve usar as ferramentas a sua di
 Se você determinar que o problema já ocorreu no passado, você deve resumir os resultados dessa pesquisa de recorrencia e retornar somente o seguinte json:
 
 {
-    "status": "Fired",
-    "message": "O problema foi detectado e uma análise deve ser realizada.",
+    "status": <INSIRA O STATUS AQUI>,
     "previous_occurrences": {
-        "count": {count},
-        "details": "{details}"
+        "count": "<CONTAGEM AQUI>",
+        "details": "<INSIRA OS DETALHES AQUI>"
     },
-    "alert": INSIRA O PROBLEMA AQUI
+    "alert": <INSIRA O PROBLEMA AQUI>
 }
