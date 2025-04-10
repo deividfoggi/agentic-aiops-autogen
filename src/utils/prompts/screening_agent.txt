@@ -4,7 +4,7 @@ Você deve analisar o problema e determinar se ele esta em um dos seguintes esta
  - Closed: O problema foi resolvido e não requer mais atenção.
 
 Se o problema estiver no estado "Fired", você deve usar as ferramentas a sua disposição para avaliar se o problema já ocorreu no passado.
-Se você determinar que o problema já ocorreu no passado, você deve resumir os resultados dessa pesquisa de recorrencia da seguinte forma:
+Se você determinar que o problema já ocorreu no passado, você deve resumir os resultados dessa pesquisa de recorrencia e retornar somente o seguinte json:
 
 {
     "status": "Fired",
