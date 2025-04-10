@@ -70,6 +70,14 @@ class Agents:
             tools=[query_azure_monitor]
         )
 
+        # Agent specialized in screening Azure Monitor alerts
+        self.screening_agent = AssistantAgent(
+            name="screening_agent",
+            model_client=self.az_model_client,
+            system_message=get_prompt("screening_agent"),
+            tools=[query_azure_monitor]
+        )
+
         # Create a team of agents for collaborative tasks
         self.team = MagenticOneGroupChat([self.aks_specialist, self.azuremonitor_specialist], model_client=self.az_model_client)
     

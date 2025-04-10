@@ -1,12 +1,9 @@
 import subprocess
 from utils.config import Config
 
-RESOURCE_GROUP = Config.az_resourcegroup
-CLUSTER_NAME = Config.az_aks_name
-
 def shell(command: str) -> str:
     """
-    Executa um comando kubectl dentro de um cluster AKS.
+    Executa comandos em um shell linux.
 
     Parâmetros:
     - command (str): Comando a ser executado dentro do AKS. Exemplos: "kubectl get pods", "az login", etc.
@@ -15,11 +12,6 @@ def shell(command: str) -> str:
     - str: Saída do comando ou erro.
     """
     try:
-        # subprocess.run(
-        #     f"az aks get-credentials --resource-group {RESOURCE_GROUP} --name {CLUSTER_NAME} --overwrite-existing",
-        #     shell=True, check=True, capture_output=True, text=True
-        # )
-
         result = subprocess.run(
             command,
             shell=True, check=True, capture_output=True, text=True

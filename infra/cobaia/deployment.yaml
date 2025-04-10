@@ -23,7 +23,7 @@ spec:
         effect: "NoSchedule"
       containers:
       - name: cobaia
-        image: nginx
+        image: nginxx
         ports:
         - containerPort: 80
         resources:
