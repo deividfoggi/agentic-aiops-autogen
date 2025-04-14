@@ -41,4 +41,4 @@ Multi-agent architecture using Autogen Magentic-One to implement AIOps.
 
 The archicture runs the mas in Azure Kubernetes Service as a deployment. It is a full stateless application at the Kubernetes level and it trusts on external services to persist any information such as secrets or AI Agents history. The agents uses AKS workload identity model to access resources needed to perform their jobs.
 
-![alt text](media/architecture_overview.png)
+![alt text](media/azure_architecture.png)
