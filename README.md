@@ -2,8 +2,9 @@
 Multi-agent architecture using Autogen Magentic-One to implement AIOps.
 
 ## Pre-requisites for development
-VSCode
-python 3.13.2
+ - VSCode
+ - python 3.13.2
+ - Docker desktop
 
 
 ## How to run it local
