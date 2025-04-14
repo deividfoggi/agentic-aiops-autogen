@@ -32,7 +32,7 @@ Multi-agent architecture using Autogen Magentic-One to implement AIOps.
 - Send a payload to test it:
 
    ```
-   curl -X POST http://localhost:8080 \           
+   curl -X POST http://localhost:8080/alert \
    -H "Content-Type: application/json" \
    -d '{"task":"Write a Python script to fetch data from an API."}'
    ```
