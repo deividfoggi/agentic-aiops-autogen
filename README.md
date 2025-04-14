@@ -1,5 +1,5 @@
-# MAS Multi-Agents MVP
-Multi-agent architecture using Magentic-One agent from Autogen
+# AIOps Multi-Agents MVP
+Multi-agent architecture using Autogen Magentic-One to implement AIOps.
 
 ## Pre-requisites for development
 VSCode
@@ -17,6 +17,9 @@ python 3.13.2
       AZURE_OPENAI_ENDPOINT=
       AZURE_OPENAI_API_KEY=
       PORT=8080
+      LLM_MODEL_SCOPE=https://cognitiveservices.azure.com/.default
+      ENVIRONMENT=dev
+
       ``` 
 
 - Build and run the image
@@ -38,9 +41,3 @@ python 3.13.2
 The archicture runs the mas in Azure Kubernetes Service as a deployment. It is a full stateless application at the Kubernetes level and it trusts on external services to persist any information such as secrets or AI Agents history. The agents uses AKS workload identity model to access resources needed to perform their jobs.
 
 ![alt text](media/architecture_overview.png)
-
-## Sequence diagram
-
-This sequence diagram gives a overview of how the application uses a multi-agent archicture to solve a problem.
-
-![alt text](media/sequence_diagram.png)
