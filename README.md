@@ -31,8 +31,9 @@ The architecture runs the AIOps multi-agents solution in Azure Kubernetes Servic
 
 - Build and run the image:
    ```
-   docker build -t mas-app .
-   docker run --env-file .env -p 8000:8000 mas-app
+   cd backend
+   docker build -t mas-app-backend .
+   docker run --env-file .env -p 8000:8000 mas-app-backend
    ```
 
 - Send a payload to test it:
@@ -57,16 +58,8 @@ The frontend is a React-based application designed to interact with the backend 
 - Navigate to the `frontend` directory:
    ```
    cd frontend
-   ```
-
-- Install dependencies:
-   ```
-   npm install
-   ```
-
-- Start the development server:
-   ```
-   npm start
+   docker build -t mas-app-frontend .
+   docker run -p 3000:80 mas-app-frontend
    ```
 
 - The application will be available at `http://localhost:3000`.
