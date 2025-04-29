@@ -73,12 +73,33 @@ class Agents:
         # Create a team of agents for collaborative tasks
         self.team = MagenticOneGroupChat([self.aks_specialist, self.azuremonitor_specialist], model_client=self.az_model_client)
     
-    async def run_task(self, event: str):
+    async def run_task(self, event: str, stream_handler=None):
         """
-        Runs a specific task with the configured agents
-        
+        Runs a specific task with the configured agents and streams the output.
+
         Args:
-            event (str): The task to be performed by the agents
+            event (str): The task to be performed by the agents.
+            stream_handler (callable, optional): A handler to process streamed messages.
         """
-        # Execute the task using the team of agents and stream the output to the console
-        await Console(self.team.run_stream(task=event))
+        # Stream the output using the provided handler or default to the console
+        if stream_handler:
+            async for message in self.team.run_stream(task=event):
+                # Log the message to the console
+                logger.info(f"Agent Message: {message}")
+
+                # Send the message to the stream handler (e.g., WebSocket)
+                await stream_handler(message)
+        else:
+            # Default to streaming to the console
+            async for message in self.team.run_stream(task=event):
+                # Convert TextMessage to a dictionary if necessary
+                if hasattr(message, "to_dict"):
+                    message = message.to_dict()
+                elif isinstance(message, str):
+                    message = {"content": message}
+
+                # Log the message to the console
+                logger.info(f"Agent Message: {message}")
+
+                # Stream the message to the console
+                print(message)
