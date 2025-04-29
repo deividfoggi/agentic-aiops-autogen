@@ -46,7 +46,7 @@ The architecture runs the AIOps multi-agents solution in Azure Kubernetes Servic
 
 ### Architecture overview
 
-The frontend is a React-based application designed to interact with the backend services. It provides a user-friendly interface for managing and monitoring the AIOps multi-agents solution.
+The frontend is a React-based application designed to interact with the backend services. It provides a user-friendly interface for managing and monitoring the AIOps multi-agents solution. It uses websocket to send and receive messages to/from the backend using port 8000.
 
 ### Pre-requisites for development
  - Node.js (version 16 or higher)
