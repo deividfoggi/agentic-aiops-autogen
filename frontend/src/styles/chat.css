@@ -1,0 +1,116 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #ece5dd;
+  margin: 0;
+  padding: 0;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: relative;
+}
+
+.chat-window {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto; /* Enable vertical scrolling */
+  height: calc(100vh - 100px); /* Adjust height as needed */
+  display: flex;
+  flex-direction: column; /* Ensure messages stack vertically */
+}
+
+.message-container {
+  clear: both;
+  margin-bottom: 15px;
+  max-width: 70%; /* Ensure all bubbles are 70% of the page width */
+  font-size: 1.5rem;
+}
+
+.message-container.left {
+  float: left;
+}
+
+.message-container.right {
+  float: right;
+}
+
+.message-bubble {
+  padding: 10px 15px;
+  border-radius: 10px;
+  display: inline-block;
+  word-break: break-word;
+  font-size: 1.3rem;
+  width: 100%; /* Ensure the bubble takes up the full width of the container */
+  box-sizing: border-box; /* Include padding in width calculation */
+}
+
+.message-bubble.MagenticOneOrchestrator {
+  background-color: blue;
+  color: white; /* Ensure text is readable */
+  border-top-right-radius: 0;
+  float: left;
+  text-align: left; /* Align text to the left */
+}
+
+.message-bubble.agent,
+.message-bubble.user {
+  background-color: #ffffff;
+  border-top-left-radius: 0;
+  float: right;
+  text-align: right; /* Align text to the right */
+}
+
+/* New styles for agent name alignment */
+.agent-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.agent-name.left {
+  text-align: left; /* Align agent name to the left */
+}
+
+.agent-name.right {
+  text-align: right; /* Align agent name to the right */
+}
+
+.message-input {
+  display: flex;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-top: 1px solid #ddd;
+}
+
+.message-input input {
+  flex: 1;
+  padding: 10px 15px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  font-size: 2rem;
+}
+
+.message-input button {
+  margin-left: 10px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: none;
+  background-color: #128c7e;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 2rem;
+}
+
+.connecting-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 10px;
+  background-color: rgba(255, 229, 100, 0.9);
+  text-align: center;
+  z-index: 100;
+}

@@ -11,3 +11,5 @@ pydantic
 azure.identity
 azure.monitor.query
 aiohttp
+uvicorn[standard]
+websockets
