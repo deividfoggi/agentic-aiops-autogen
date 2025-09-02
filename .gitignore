@@ -11,3 +11,4 @@ launch.json
 *.drawio.bkp
 logs/
 *.log
+*azurite*.json

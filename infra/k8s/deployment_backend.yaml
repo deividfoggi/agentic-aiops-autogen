@@ -1,0 +1,40 @@
+# deployment of a pod with a single container running mas
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mas-backend
+  namespace: default
+  labels:
+    app: mas-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mas-backend
+  template:
+    metadata:
+      labels:
+        app: mas-backend
+        azure.workload.identity/use: "true"
+    spec:
+      tolerations:
+      - key: "CriticalAddonsOnly"
+        operator: "Equal"
+        value: "NoSchedule"
+        effect: "NoSchedule"    
+      serviceAccountName: workload-identity-sa93a748
+      containers:
+      - name: mas
+        image: aiopsdemothefoggi.azurecr.io/mas-app-backend-demo:v0.7
+        ports:
+        - containerPort: 8080
+        envFrom:
+          - configMapRef:
+              name: mas-config
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "500m"
+          limits:
+            memory: "1024Mi"
+            cpu: "2048m"

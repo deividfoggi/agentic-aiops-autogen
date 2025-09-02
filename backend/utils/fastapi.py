@@ -8,6 +8,7 @@ from datetime import timedelta
 import json
 from utils.logger import setup_logger
 from fastapi.middleware.cors import CORSMiddleware
+from utils.console_streamer import console_streamer
 
 # Set up logging
 logger = setup_logger(__name__)
@@ -53,7 +54,8 @@ class APIEndpoint:
         async def process_payload(request: Request):
             try:
                 # Log the incoming request
-                logger.info(f"Received request from {request.client.host} with headers: {request.headers}")
+                client_host = getattr(request.client, 'host', 'unknown') if request.client else 'unknown'
+                logger.info(f"Received request from {client_host} with headers: {request.headers}")
                 
                 # Read the request body
                 payload = await request.json()
@@ -85,13 +87,22 @@ class APIEndpoint:
         @self.app.websocket("/ws")
         async def websocket_endpoint(websocket: WebSocket):
             await websocket.accept()
-            logger.info(f"WebSocket connection established: {websocket.client}")
+            logger.info(f"WebSocket connection established")
+
+            # Start capturing console output for this WebSocket
+            console_streamer.start_capturing(websocket)
 
             try:
                 agents = Agents()
 
                 # Use the CustomConsoleHandler to send messages to the WebSocket
                 console_handler = CustomConsoleHandler(websocket)
+
+                # Send a welcome message
+                await websocket.send_json({
+                    "sender": "SYSTEM",
+                    "text": "Console streaming started. All output will be shown here."
+                })
 
                 while True:
                     # Receive a message from the WebSocket client
@@ -103,21 +114,38 @@ class APIEndpoint:
                         event = data_json["event"]
 
                         try:
-                            # Run the agent's task and stream responses to the WebSocket
-                            await agents.run_task(event, stream_handler=console_handler)
+                            # Send command echo to show what's being executed
+                            await websocket.send_json({
+                                "sender": "COMMAND",
+                                "text": f"Processing alert: {event}"
+                            })
                             
-                            # Send a success message when the task is complete
-                            await websocket.send_json({"status": "success", "message": "Task completed"})
+                            # Process the event using the same logic as the /alert route
+                            logger.info(f"Processing WebSocket alert event: {event}")
+                            
+                            # Run the agent's task (same as in /alert route)
+                            await agents.run_task(event)
+                            
+                            # Send a completion message
+                            await websocket.send_json({
+                                "sender": "SYSTEM", 
+                                "text": "Alert processing completed successfully"
+                            })
                         except Exception as e:
-                            logger.error(f"Error processing event: {str(e)}")
-                            await websocket.send_json({"status": "error", "error": str(e)})
+                            logger.error(f"Error processing alert event: {str(e)}")
+                            await websocket.send_json({
+                                "sender": "ERROR", 
+                                "text": f"Error processing alert: {str(e)}"
+                            })
 
             except WebSocketDisconnect:
-                logger.info(f"WebSocket disconnected: {websocket.client}")
+                logger.info(f"WebSocket disconnected")
             except Exception as e:
                 logger.error(f"WebSocket error: {str(e)}", exc_info=True)
             finally:
-                logger.info(f"Cleaning up WebSocket connection: {websocket.client}")
+                # Stop capturing console output for this WebSocket
+                console_streamer.stop_capturing(websocket)
+                logger.info(f"Cleaning up WebSocket connection")
         
         @self.app.post("/run_task")
         async def run_task(request: Request):

@@ -1,6 +1,6 @@
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #ece5dd;
+  background-color: #0a0a0a; /* Dark console background */
   margin: 0;
   padding: 0;
 }
@@ -10,6 +10,7 @@ body {
   flex-direction: column;
   height: 100vh;
   position: relative;
+  background-color: #0a0a0a;
 }
 
 .chat-window {
@@ -19,6 +20,16 @@ body {
   height: calc(100vh - 100px); /* Adjust height as needed */
   display: flex;
   flex-direction: column; /* Ensure messages stack vertically */
+  background-color: #0a0a0a;
+}
+
+/* Console-style message container */
+.message-container.console-style {
+  clear: both;
+  margin-bottom: 2px; /* Minimal spacing like a console */
+  max-width: 100%; /* Full width for console style */
+  font-size: 1rem;
+  width: 100%;
 }
 
 .message-container {
@@ -34,6 +45,87 @@ body {
 
 .message-container.right {
   float: right;
+}
+
+/* Console-style message bubble */
+.message-bubble.console {
+  background-color: #0a0a0a;
+  color: #00ff00;
+  font-family: 'Fira Code', 'Monaco', 'Consolas', 'Courier New', monospace;
+  border: none;
+  border-radius: 0;
+  padding: 4px 8px;
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  width: 100%;
+  box-sizing: border-box;
+  float: none;
+  text-align: left;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.message-bubble.console.user {
+  color: #00aaff; /* Blue for user input */
+}
+
+.message-bubble.console.agent {
+  color: #00ff00; /* Green for agent output */
+}
+
+/* Different colors for different console output types */
+.message-bubble.console.system {
+  color: #ffaa00; /* Orange for system messages */
+}
+
+.message-bubble.console.command {
+  color: #ff00ff; /* Magenta for commands */
+}
+
+.message-bubble.console.error {
+  color: #ff4444; /* Red for errors */
+}
+
+.message-bubble.console.stdout {
+  color: #ffffff; /* White for stdout */
+}
+
+.message-bubble.console.stderr {
+  color: #ff6666; /* Light red for stderr */
+}
+
+.message-bubble.console.log_info {
+  color: #88ff88; /* Light green for info logs */
+}
+
+.message-bubble.console.log_warning {
+  color: #ffff88; /* Yellow for warning logs */
+}
+
+.message-bubble.console.log_error {
+  color: #ff8888; /* Light red for error logs */
+}
+
+.message-bubble.console.log_debug {
+  color: #aaaaaa; /* Gray for debug logs */
+}
+
+.console-timestamp {
+  color: #888;
+  margin-right: 8px;
+  font-size: 0.8em;
+  font-weight: normal;
+}
+
+.console-sender {
+  color: #ffaa00; /* Orange for sender name */
+  margin-right: 8px;
+  font-weight: bold;
+}
+
+.console-message {
+  color: inherit;
 }
 
 .message-bubble {
@@ -79,29 +171,43 @@ body {
 .message-input {
   display: flex;
   padding: 10px;
-  background-color: #f0f0f0;
-  border-top: 1px solid #ddd;
+  background-color: #1a1a1a; /* Dark console input area */
+  border-top: 1px solid #333;
 }
 
 .message-input input {
   flex: 1;
   padding: 10px 15px;
-  border-radius: 20px;
-  border: none;
+  border-radius: 4px;
+  border: 1px solid #333;
   outline: none;
-  font-size: 2rem;
+  font-size: 1rem;
+  font-family: 'Fira Code', 'Monaco', 'Consolas', 'Courier New', monospace;
+  background-color: #0a0a0a;
+  color: #00ff00;
+}
+
+.message-input input::placeholder {
+  color: #666;
 }
 
 .message-input button {
   margin-left: 10px;
   padding: 10px 20px;
-  border-radius: 20px;
-  border: none;
-  background-color: #128c7e;
-  color: white;
+  border-radius: 4px;
+  border: 1px solid #00ff00;
+  background-color: #0a0a0a;
+  color: #00ff00;
   cursor: pointer;
   font-weight: bold;
-  font-size: 2rem;
+  font-size: 1rem;
+  font-family: 'Fira Code', 'Monaco', 'Consolas', 'Courier New', monospace;
+  transition: background-color 0.2s;
+}
+
+.message-input button:hover {
+  background-color: #00ff00;
+  color: #0a0a0a;
 }
 
 .connecting-overlay {
@@ -110,7 +216,10 @@ body {
   left: 0;
   right: 0;
   padding: 10px;
-  background-color: rgba(255, 229, 100, 0.9);
+  background-color: rgba(255, 170, 0, 0.9); /* Orange overlay for console theme */
+  color: #0a0a0a;
   text-align: center;
   z-index: 100;
+  font-family: 'Fira Code', 'Monaco', 'Consolas', 'Courier New', monospace;
+  font-weight: bold;
 }

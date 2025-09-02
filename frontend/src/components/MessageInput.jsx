@@ -17,10 +17,10 @@ const MessageInput = ({ onSend }) => {
         type="text"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        placeholder="Type a problem to be solved..."
+        placeholder="$ Enter command or describe the problem..."
         onKeyDown={(e) => e.key === 'Enter' && handleSend()}
       />
-      <button onClick={handleSend}>Start to work</button>
+      <button onClick={handleSend}>Execute</button>
     </div>
   );
 };

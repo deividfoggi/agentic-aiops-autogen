@@ -54,6 +54,13 @@ class Agents:
             tools=[get_dynatrace_logs]
         )
 
+        # Create an agent specialized in creating a plan
+        self.planner = AssistantAgent(
+            name="planner",
+            model_client=self.az_model_client,
+            system_message=get_prompt("planner")
+        )
+
         # Create an agent specialized in executing shell commands
         self.aks_specialist = AssistantAgent(
             name="aks_specialist",
@@ -73,16 +80,24 @@ class Agents:
         # Create a team of agents for collaborative tasks
         self.team = MagenticOneGroupChat([self.aks_specialist, self.azuremonitor_specialist], model_client=self.az_model_client)
     
-    async def run_task(self, event: str, stream_handler=None):
+    async def run_task(self, event, stream_handler=None):
         """
-        Runs a specific task with the configured agents and streams the output.
+        Runs a task with the team of agents and streams the output.
 
         Args:
             event (str): The task to be performed by the agents.
             stream_handler (callable, optional): A handler to process streamed messages.
         """
+        # Console output for demo
+        print(f"🤖 Starting AI task execution...")
+        print(f"📋 Task: {event}")
+        print(f"🔄 Initializing agent team...")
+        
+        logger.info(f"Starting task execution: {event}")
+        
         # Stream the output using the provided handler or default to the console
         if stream_handler:
+            print(f"📡 Streaming output to WebSocket...")
             async for message in self.team.run_stream(task=event):
                 # Log the message to the console
                 logger.info(f"Agent Message: {message}")
@@ -91,6 +106,7 @@ class Agents:
                 await stream_handler(message)
         else:
             # Default to streaming to the console
+            print(f"📺 Streaming output to console...")
             async for message in self.team.run_stream(task=event):
                 # Convert TextMessage to a dictionary if necessary
                 if hasattr(message, "to_dict"):
@@ -103,3 +119,6 @@ class Agents:
 
                 # Stream the message to the console
                 print(message)
+                
+        print(f"✅ Task execution completed!")
+        logger.info(f"Task execution completed for: {event}")

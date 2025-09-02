@@ -2,35 +2,31 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mas-deployment
-  namespace: mas
+  name: mas-frontend
+  namespace: default
   labels:
-    app: mas
+    app: mas-frontend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mas
+      app: mas-frontend
   template:
     metadata:
       labels:
-        app: mas
+        app: mas-frontend
         azure.workload.identity/use: "true"
     spec:
       tolerations:
       - key: "CriticalAddonsOnly"
         operator: "Equal"
         value: "NoSchedule"
-        effect: "NoSchedule"    
-      serviceAccountName: mas
+        effect: "NoSchedule"
       containers:
       - name: mas
-        image: dfoggidemoai.azurecr.io/mas-app:v0.12
+        image: aiopsdemothefoggi.azurecr.io/mas-app-frontend-demo:v0.7
         ports:
-        - containerPort: 8080
-        envFrom:
-          - configMapRef:
-              name: mas-config
+        - containerPort: 80
         resources:
           requests:
             memory: "256Mi"

@@ -31,7 +31,7 @@ function App() {
   const connectWebSocket = () => {
     setConnecting(true);
     
-    const ws = new WebSocket('ws://localhost:8000/ws');
+    const ws = new WebSocket('ws://20.66.11.121/ws');
     wsRef.current = ws;
 
     ws.onopen = () => {
@@ -74,7 +74,8 @@ function App() {
         text: text // Use the input text for the first message
       }]);
     } else {
-      const userMessage = { sender: 'user', text };
+      // Show user input as a console command with $ prompt
+      const userMessage = { sender: 'user', text: `$ ${text}` };
       setMessages(prev => [...prev, userMessage]);
     }
 
@@ -87,7 +88,7 @@ function App() {
 
   const sendMessageHttp = async (text) => {
     try {
-      const response = await fetch('http://localhost:8000/run_task', {
+      const response = await fetch('http://20.66.11.121/run_task', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ event: text }),
